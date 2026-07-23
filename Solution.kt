@@ -15,6 +15,9 @@ class Solution {
 
         Поскольку HashSet хранит только уникальные значения, одинаковые числа автоматически
         объединяются.
+
+        Время: O(n)
+        Память: O(n)
      */
     fun minimumOperations(nums: IntArray): Int {
         val set = HashSet<Int>()
@@ -26,5 +29,88 @@ class Solution {
         }
 
         return set.size
+    }
+
+
+    /*
+        1365. How Many Numbers Are Smaller Than the Current Number
+        Given the array nums, for each nums[i] find out how many numbers in the array are
+        smaller than it. That is, for each nums[i] you have to count the number of
+        valid j's such that j != i and nums[j] < nums[i]. Return the answer in an array.
+
+        Самое очевидное решение - Для каждого элемента пройтись по всему массиву
+
+        Более быстрое решение O(n log n)
+        отсортировать массив
+        создать мапу по этому массиву - элемент -> индекс первого вхождения,
+        перед ним находятся все меньшие числа
+        итерируем по исходному массиву и берем валью по ключу
+
+        Время: O(n log n)
+        Память: O(n)
+     */
+    fun smallerNumbersThanCurrent(nums: IntArray): IntArray {
+        val sorted = nums.sorted()
+
+        val map = HashMap<Int, Int>()
+
+        for (i in sorted.indices) {
+            map.putIfAbsent(sorted[i], i)
+        }
+
+        val answer = IntArray(nums.size)
+
+        for (i in nums.indices) {
+            answer[i] = map[nums[i]]!!
+        }
+
+        return answer
+    }
+
+
+    /*
+        1827. Minimum Operations to Make the Array Increasing
+        You are given an integer array nums (0-indexed). In one operation, you can choose
+        an element of the array and increment it by 1. For example, if nums = [1,2,3],
+        you can choose to increment nums[1] to make nums = [1,3,3]. Return the minimum
+        number of operations needed to make nums strictly increasing. An array nums is
+        strictly increasing if nums[i] < nums[i+1] for all 0 <= i < nums.length - 1.
+        An array of length 1 is trivially strictly increasing.
+
+        задача решается жадным алгоритмом
+
+        Для каждого элемента есть всего два варианта
+
+        1 Если уже подходит nums[i] > nums[i-1] - ничего делать не нужно
+
+        2 Если не подходит - нужно увеличить nums[i-1] + 1  - любое увеличение сверх этого только
+        увеличит число операций и еще сильнее "поднимет планку" для следующих элементов -
+        єто и есть жадный выбор
+
+        Алгоритм
+
+            Идем слева направо
+            Для каждого элемента:
+                если nums[i] <= nums[i-1]
+                    нужно увеличить
+                    nums[i-1] + 1
+                    ответ += новое - старое
+                    nums[i] = новое
+
+        Время: O(n) - один проход по массиву
+        Память: O(1) - используем только несколько переменных
+     */
+    fun minOperations(nums: IntArray): Int {
+        var operations = 0
+
+        for (i in 1 until nums.size) {
+            if (nums[i] <= nums[i - 1]) {
+                val newValue = nums[i - 1] + 1
+                operations += newValue - nums[i]
+                nums[i] = newValue
+            }
+        }
+
+        return operations
     }
 }
