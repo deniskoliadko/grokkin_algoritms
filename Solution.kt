@@ -113,4 +113,39 @@ class Solution {
 
         return operations
     }
+
+    /*
+        462. Minimum Moves to Equal Array Elements II
+        Given an integer array nums of size n, return the minimum number of moves required to make all array elements equal.
+        In one move, you can increment or decrement an element of the array by 1.
+        Test cases are designed so that the answer will fit in a 32-bit integer.
+
+        посчитал оба примера предложеных в хадаче
+        [1,2,3] и   [1,10,2,9]
+        [3,2,3]     [19, 18, 16, 16]
+        ответ 2 и 16
+        интуитивно - массив сортируем и берем из середины - в обоих случаях 2 и (2 или 9) выигрывает середина
+
+
+        Алгоритм
+
+            отсортировать
+            пройти по массиву и сложить все (n[i] - середина)
+
+        Время: O(n log n) - сортировка + один проход по массиву
+        Память: O(1) - используем эффективный алгоритм в jvm для сортировки существующего массива nums.sort()
+     */
+    fun minMoves2(nums: IntArray): Int {
+        nums.sort()
+
+        val median = nums[nums.size / 2]
+
+        var moves = 0L // лонг от переполнения
+
+        for (n in nums) {
+            moves += kotlin.math.abs(n.toLong() - median)
+        }
+
+        return moves.toInt()
+    }
 }
