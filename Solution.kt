@@ -148,4 +148,70 @@ class Solution {
 
         return moves.toInt()
     }
+
+    /*
+    3072. Distribute Elements Into Two Arrays II
+    You are given a 1-indexed array of integers nums of length n.
+
+    We define a function greaterCount such that greaterCount(arr, val) returns the number of elements in arr that are strictly greater than val.
+
+    You need to distribute all the elements of nums between two arrays arr1 and arr2 using n operations. In the first operation, append nums[1] to arr1. In the second operation, append nums[2] to arr2. Afterwards, in the ith operation:
+
+    If greaterCount(arr1, nums[i]) > greaterCount(arr2, nums[i]), append nums[i] to arr1.
+    If greaterCount(arr1, nums[i]) < greaterCount(arr2, nums[i]), append nums[i] to arr2.
+    If greaterCount(arr1, nums[i]) == greaterCount(arr2, nums[i]), append nums[i] to the array with a lesser number of elements.
+    If there is still a tie, append nums[i] to arr1.
+    The array result is formed by concatenating the arrays arr1 and arr2. For example, if arr1 == [1,2,3] and arr2 == [4,5,6], then result = [1,2,3,4,5,6].
+
+    Return the integer array result.
+
+    Hint 1
+    We need a data structure that counts the number of integers greater than a given value x and supports insertion.
+    Hint 2
+    Use Segment Tree or Binary Indexed Tree by compressing the numbers to the range [1,n].
+
+    просто в лоб не проходит по времени O(n) × O(n) = O(n2)
+
+
+     */
+    fun resultArray(nums: IntArray): IntArray {
+        val arr1 = mutableListOf<Int>()
+        val arr2 = mutableListOf<Int>()
+
+        arr1.add(nums[0])
+        arr2.add(nums[1])
+
+        for (i in 2 until nums.size) {
+            val num = nums[i]
+
+            val greater1 = greaterCount(arr1, num)
+            val greater2 = greaterCount(arr2, num)
+
+            if (greater1 > greater2) {
+                arr1.add(num)
+            } else if (greater1 < greater2) {
+                arr2.add(num)
+            } else {
+                if (arr1.size <= arr2.size) {
+                    arr1.add(num)
+                } else {
+                    arr2.add(num)
+                }
+            }
+        }
+
+        return (arr1 + arr2).toIntArray()
+    }
+
+    private fun greaterCount(arr: List<Int>, value: Int): Int {
+        var count = 0
+
+        for (num in arr) {
+            if (num > value) {
+                count++
+            }
+        }
+
+        return count
+    }
 }
