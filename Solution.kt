@@ -214,4 +214,91 @@ class Solution {
 
         return count
     }
+
+    // copilot
+    fun resultArrayByCopilot(nums: IntArray): IntArray {
+        // 1. Coordinate compression
+        val sorted = nums.clone()
+        sorted.sort()
+
+        val rank = HashMap<Int, Int>()
+
+        var index = 1
+        for (num in sorted) {
+            if (!rank.containsKey(num)) {
+                rank[num] = index++
+            }
+        }
+
+        // 2. Fenwick trees for arr1 and arr2
+        val tree1 = FenwickTree(rank.size)
+        val tree2 = FenwickTree(rank.size)
+
+        val arr1 = mutableListOf<Int>()
+        val arr2 = mutableListOf<Int>()
+
+        // First two elements
+        arr1.add(nums[0])
+        tree1.add(rank[nums[0]]!!)
+
+        arr2.add(nums[1])
+        tree2.add(rank[nums[1]]!!)
+
+        // 3. Process remaining elements
+        for (i in 2 until nums.size) {
+            val num = nums[i]
+            val r = rank[num]!!
+
+            // Number of elements > num
+            val greater1 = arr1.size - tree1.query(r)
+            val greater2 = arr2.size - tree2.query(r)
+
+            if (greater1 > greater2) {
+                arr1.add(num)
+                tree1.add(r)
+            } else if (greater1 < greater2) {
+                arr2.add(num)
+                tree2.add(r)
+            } else {
+                // Same greaterCount -> choose smaller array
+                if (arr1.size <= arr2.size) {
+                    arr1.add(num)
+                    tree1.add(r)
+                } else {
+                    arr2.add(num)
+                    tree2.add(r)
+                }
+            }
+        }
+
+        // 4. Concatenate arr1 + arr2
+        return (arr1 + arr2).toIntArray()
+    }
+
+    class FenwickTree(private val n: Int) {
+        private val tree = IntArray(n + 1)
+
+        fun add(index: Int) {
+            var i = index
+
+            while (i <= n) {
+                tree[i]++
+                i += i and -i
+            }
+        }
+
+        // Number of elements with rank <= index
+        fun query(index: Int): Int {
+            var i = index
+            var result = 0
+
+            while (i > 0) {
+                result += tree[i]
+                i -= i and -i
+            }
+
+            return result
+        }
+    }
+
 }
