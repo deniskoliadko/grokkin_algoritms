@@ -170,7 +170,7 @@ class Solution {
     Hint 2
     Use Segment Tree or Binary Indexed Tree by compressing the numbers to the range [1,n].
 
-    просто в лоб не проходит по времени O(n) × O(n) = O(n2)
+    просто в лоб не проходит по времени O(n) * O(n) = O(n2)
 
 
      */
