@@ -304,6 +304,28 @@ class Solution {
 
     /*
         LeetCode 509. Fibonacci Number
+
+        Время: (O(2^n)) - много повторных вычислений.
+        Память: (O(n)) - глубина стека рекурсии.
+
+        оптимальное через цикл
+
+        fun fib(n: Int): Int {
+            if (n <= 1) return n
+
+            var prev = 0
+            var curr = 1
+
+            for (i in 2..n) {
+                val next = prev + curr
+                prev = curr
+                curr = next
+            }
+
+            return curr
+        }
+        Время: (O(n)).
+        Дополнительная память: (O(1)).
      */
     fun fib(n: Int): Int {
         if (n <= 1) return n
@@ -312,7 +334,32 @@ class Solution {
     }
 
     /*
+        LeetCode 100. Same Tree
 
+        Оба узла пустые (null) - значит, эта часть деревьев совпадает.
+        Только один узел null - деревья отличаются.
+        Оба узла существуют - их значения должны совпадать, и левое и правое поддеревья
+            тоже должны быть одинаковыми.
+
+        Время: (O(n)), где (n) - количество узлов в меньшем из двух деревьев в худшем случае.
+        В общем случае проверяется не более всех узлов обоих деревьев.
+
+        Память: (O(h)) на стек рекурсии, где (h) - максимальная глубина обхода.
+        В худшем случае это (O(n)).
      */
+    fun isSameTree(p: TreeNode?, q: TreeNode?): Boolean {
+        if (p == null && q == null) return true
 
+        if (p == null || q == null) return false
+
+        if (p.`val` != q.`val`) return false
+
+        return isSameTree(p.left, q.left) &&
+                isSameTree(p.right, q.right)
+    }
+
+    class TreeNode(var `val`: Int) {
+            var left: TreeNode? = null
+            var right: TreeNode? = null
+        }
 }
